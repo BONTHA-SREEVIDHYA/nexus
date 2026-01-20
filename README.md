@@ -217,6 +217,31 @@ pipeline {
 
 ```
 
+<img width="1328" height="393" alt="image" src="https://github.com/user-attachments/assets/f27a5eaf-34a8-4788-bde6-72ec9539492e" />
+
+===========================================================================
+
+creating private docker repo in nexus 
+ - open any port for docker registry ( we have opened 5000 port )
+ - create docker hosted repo : Nexus UI → Repositories → Create repository
+ - name: docker-private http: 5000 ; allow anonymous pull ; enable docker v1 api -- create
+ - realm: docker -token .. to other side
+
+We can access docker private repo @ < public ip of nexus ec2> : 5000  
+```bash
+docker login <publicip>:5000
+docker pull hello-world 
+image name: registryname/repo/image: tag (for private docker repos)
+rename the existing image 
+docker tag hello-world:latest <ip>:5000/docker-private/hello-world:v1
+docker push <ip>:5000/docker-private/hello-world:v1
+```
+<img width="1128" height="620" alt="image" src="https://github.com/user-attachments/assets/a9a2cf89-c0de-418b-a24c-cf0405009f82" />
+only meta data exists   
+
+   
+
+
 
        
 
