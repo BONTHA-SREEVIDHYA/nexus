@@ -22,7 +22,8 @@ With Nexus ✅
   * Versioned artifact storage
 
 Three type of repos are there inside nexus 
-    - proxy repos  :   used to cache repos from repote repos   
+  
+    - proxy repos  :   used to cache repos from repote repos     
       Every time if the dependedncies are to be downloaded from maven central it takes lot of time , so they are downloaded first and then cached in nexus & from next time they are used from nexus   
       It proxies external repos like maven central, npmjs.org, dockerhub  
       download once then serves from cache   
