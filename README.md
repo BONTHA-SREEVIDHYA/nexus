@@ -100,6 +100,42 @@ security -- user management
 tasks --  policies can be setup 
 
 
+==================================================================================================================
+
+configuring jenkins & sonarqube ( 2 ec2 instances t2.medium) 
+Sonarqube:
+```bash
+sudo apt update
+sudo apt install -y openjdk-17-jdk-headless
+sudo apt install docker.io
+sudo docker run -d -p 9000:9000 sonarqube:lts-community 
+Access sonar at :9000 default access: admin, admin
+```
+
+Jenkins
+```bash
+sudo apt install -y openjdk-17-jdk-headless
+vi jenkins.sh
+sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc \
+  https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc]" \
+  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+  /etc/apt/sources.list.d/jenkins.list > /dev/null
+
+chmod +x Jenkins.sh 
+./Jenkins.sh
+sudo apt update
+sudo apt install jenkins
+sudo systemctl enable jenkins
+sudo systemctl start jenkins
+sudo systemctl status jenkins
+```
+
+Access sonar @ <public-ip>:9000
+       Jenkins @ <public-ip>: 8080
+
+==========================================================================================================
+
 
 
     
