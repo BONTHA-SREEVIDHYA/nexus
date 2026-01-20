@@ -52,5 +52,54 @@ Repositories:
 <img width="1536" height="1024" alt="ChatGPT Image Jan 20, 2026, 09_52_44 PM" src="https://github.com/user-attachments/assets/1480b92a-ab53-4cfb-bdfc-bfda62f0e102" />
 We can also set clean up policies : Ex: if artifact >90 days artifact can be deleted  
 Pre req: 4GB storage wherever you run nexus
-      
+
+Nexus Installation:
+
+t2.medium ec2 instance 
+```bash
+sudo apt update  
+sudo apt install docker.io  
+(Installing nexus through docker image) 
+
+vi /etc/docker/daemon.json
+{
+ "insecure-registries":[<your nexus ip>:5000]
+}
+(As nexus is a insecure link ( http ), we should let know docker about this )
+sudo systemctl restart docker
+sudo chmod 666 /var/run/docker.sock ( just a workaround instead we should add jenkins to docker group )   
+docker run -d -p 8081(host):8081(continer) -p 5000:5000 sonatype/nexus3
+```
+8081 -- nexus  
+5000 -- to private docker registry 
+
+We can access nexus over browser < public ip >:8081 
+username : admin   
+The password is stored in admin.password file which can be accessed as below :  
+```bash
+docker ps # get the container name
+docker exec -it < container name> /bin/bash
+cd sonatype-work/nexus3
+cat admin.password
+```
+
+Login using username & password to nexus   
+setup new password   
+Enable anonymous activities ( without creds also anyone can access creds )  
+
+<img width="1504" height="697" alt="image" src="https://github.com/user-attachments/assets/835f6422-0d37-4a61-ad25-cf7b8c52031b" />
+
+Maven-releases : artifacts to deployment (prod)  
+maven-snapshots-- artifacts in lower level area ( like dev/test)  
+
+In settings,  
+repos -- where we can upload any artifacts
+blob -- all the artifacts uploaded
+proprietary resources -- security purpose : only belongs to org ( so that url will not be allocated to others )  
+security -- user management   
+tasks --  policies can be setup 
+
+
+
+
     
