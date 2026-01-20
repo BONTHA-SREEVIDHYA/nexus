@@ -135,7 +135,90 @@ Access sonar @ <public-ip>:9000
        Jenkins @ <public-ip>: 8080
 
 ==========================================================================================================
+for any server we need url & creds to access   
+for nexus url is stored inside pom.xml & as creds are not safe to be stored, they are stored inside settings.xml file   
+generate sonartoken which can be used for auth later ( admin -- security -- users -- admin ( token ))
+Manage Jenkins:  
+   In jenkins install plugins : sonarqube scanner, config file provider ( for generating settings.xml file inside jenkins) , Maven Integration, Pipeline Maven Integration , Stage View   
+   tools --> maven3 maven   
+         sonar-scanner ( install ur version 6.x) 
+   system ( add sonar server)  name: sonar, server url : ip:9000 , create a credentials of secret text type with sonar token fetched, id : sonar-token  & add   
+   managed files -- ( enabled bcoz we installed config file provider ) (maven settings.xml) ID: maven-settings ( a file is generated down ) add ur creds there  
+   <img width="896" height="511" alt="image" src="https://github.com/user-attachments/assets/9bf8e4f8-f97a-417c-91a5-0a38a4782704" />
 
+<img width="1052" height="432" alt="image" src="https://github.com/user-attachments/assets/46b16398-a5bf-4e26-9e7e-fc63c465f4e7" />
+
+in pom.xml file ( for storing nexus urls -- can get from nexus & must be updated with our nexus urls in any repo ) -- update pom.xml & push changes   
+
+
+create pipeline :
+
+```groovy
+pipeline {
+    agent any
+
+    tools {
+        maven 'maven3'
+    }
+
+    environment {
+        SCANNER_HOME = tool 'sonar-scanner'
+    }
+
+    stages {
+
+        stage('Git Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/jaiswaladi246/FullStack-Blogging-App.git'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('sonar') {
+                    sh """
+                    ${SCANNER_HOME}/bin/sonar-scanner \
+                    -Dsonar.projectName=mvnsonarnexus \
+                    -Dsonar.projectKey=mvnsonarnexus \
+                    -Dsonar.java.binaries=target
+                    """
+                }
+            }
+        }
+
+        stage('Trivy FS Scan') {
+            steps {
+                sh 'trivy fs --format table -o fsreport.html .'
+            }
+        }
+
+        stage('Build & Publish Artifact') {
+            steps {
+                withMaven(
+                    globalMavenSettingsConfig: '',
+                    jdk: '',
+                    maven: 'maven3',
+                    mavenSettingsConfig: 'maven-settings',
+                    traceability: true
+                ) {
+                    sh 'mvn clean deploy'
+                }
+            }
+        }
+    }
+}
+
+```
+
+
+       
 
 
     
