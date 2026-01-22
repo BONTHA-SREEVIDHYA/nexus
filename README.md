@@ -248,6 +248,8 @@ docker push <ip>:5000/docker-private/hello-world:v1
 only meta data exists   
 
    
+To download code from nexus:  
+<img width="1147" height="214" alt="image" src="https://github.com/user-attachments/assets/e5b3d31f-c95e-4ace-9be4-080f94038595" />
 
 
 
