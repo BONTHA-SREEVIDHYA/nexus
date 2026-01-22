@@ -249,6 +249,9 @@ only meta data exists
 
    
 To download code from nexus:  
+In shell:  
+<img width="1685" height="185" alt="image" src="https://github.com/user-attachments/assets/aee531a2-bdb7-435b-a6d3-7bc6071208c9" />
+In Pipeline:  
 <img width="1147" height="214" alt="image" src="https://github.com/user-attachments/assets/e5b3d31f-c95e-4ace-9be4-080f94038595" />
 
 
