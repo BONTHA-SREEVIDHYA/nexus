@@ -1,0 +1,48 @@
+```groovy
+pipeline {
+    agent any
+    tools {
+        maven 'maven3'
+    }
+    environment{
+        SONAR_HOME= tool "sonar-scanner"
+    }
+    stages {
+        stage('Git Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/BONTHA-SREEVIDHYA/FullStack-Blogging-App.git'
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                sh "mvn test"
+            }
+        }
+        
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('sonarserver') {
+                    sh ''' $SONAR_HOME/bin/sonar-scanner -Dsonar.projectName=mvnsonarnexus -Dsonar.projectKey=mvnsonarnexus \
+                    -Dsonar.java.binaries=target'''
+                }
+            }
+        }
+        
+        stage('Trivy Scan') {
+            steps {
+                sh "trivy fs --format table -o fsreport.html ."
+            }
+        }
+        
+        stage('Build & publish Artifacts ') {
+            steps {
+                withMaven(maven: 'maven3', mavenSettingsConfig: 'maven-settings', traceability: true) {
+                    sh "mvn clean deploy"
+                }
+            }
+        }
+        
+    }
+}
+```
